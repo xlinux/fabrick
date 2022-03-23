@@ -3,6 +3,8 @@ package it.fabrick.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,8 @@ import it.fabrick.demo.service.pojo.list.Lists;
 @RestController
 @RequestMapping("api")
 public class DemoController {
+	
+	Logger logger = LoggerFactory.getLogger(DemoController.class);
 
 	@Autowired
 	private ApiService apiService;

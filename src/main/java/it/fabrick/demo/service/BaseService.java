@@ -1,11 +1,11 @@
 package it.fabrick.demo.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,6 +16,8 @@ import it.fabrick.demo.service.pojo.error.ErrorResponse;
 
 @Component
 public class BaseService {
+
+	Logger logger = LoggerFactory.getLogger(BaseService.class);
 
 	@Value("${base.url}")
 	private String baseUrl;
@@ -71,18 +73,13 @@ public class BaseService {
 	}
 
 	public void manageError(HttpStatusCodeException httpEx) {
+		logger.error(httpEx.getMessage());
 		String jsonBody = ((org.springframework.web.client.HttpStatusCodeException) httpEx).getResponseBodyAsString();
 
 		ErrorResponse b = extracted(jsonBody);
 		DemoException.throwException(b.getErrors().get(0).getCode(), b.getErrors().get(0).getDescription());
 	}
 
-//	public void manageError(HttpServerErrorException httpEx) {
-//		String jsonBody = ((org.springframework.web.client.HttpStatusCodeException) httpEx).getResponseBodyAsString();
-//
-//		ErrorResponse b = extracted(jsonBody);
-//		DemoException.throwException(b.getErrors().get(0).getCode(), b.getErrors().get(0).getDescription());
-//	}
 
 	private ErrorResponse extracted(String jsonBody) {
 		ErrorResponse b = null;

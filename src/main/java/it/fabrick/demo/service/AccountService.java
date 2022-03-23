@@ -4,6 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +25,8 @@ import it.fabrick.demo.service.pojo.list.Lists;
 
 @Service
 public class AccountService extends BaseService {
+
+	Logger logger = LoggerFactory.getLogger(AccountService.class);
 
 	@Value("${url.list.of.accounts}")
 	private String serviceName;
@@ -50,7 +54,7 @@ public class AccountService extends BaseService {
 			HttpHeaders headers = buildHeaders();
 
 			HttpEntity<String> entity = new HttpEntity<>(headers);
-
+			logger.info("call url: " + url);
 			result = getRestTemplate().exchange(b.build().toURL().toString(), httpMethod, entity, Lists.class);
 		} catch (HttpServerErrorException | HttpClientErrorException httpEx) {
 			manageError(httpEx);
@@ -71,6 +75,7 @@ public class AccountService extends BaseService {
 
 		ResponseEntity<Balance> result = null;
 		try {
+			logger.info("call url: " + url);
 			result = getRestTemplate().exchange(url, httpMethod, entity, Balance.class);
 		} catch (HttpServerErrorException | HttpClientErrorException httpEx) {
 			manageError(httpEx);
@@ -86,9 +91,10 @@ public class AccountService extends BaseService {
 		HttpHeaders headers = buildHeaders();
 
 		HttpEntity<BonificoRequest> entity = new HttpEntity<BonificoRequest>(bonificoRequest, headers);
-//new String(getOm().writeValueAsBytes(bonificoRequest))
+
 		ResponseEntity<BonificoResponse> result = null;
 		try {
+			logger.info("call url: " + url);
 			result = getRestTemplate().exchange(url, httpMethod, entity, BonificoResponse.class);
 		} catch (HttpServerErrorException | HttpClientErrorException httpEx) {
 			manageError(httpEx);
